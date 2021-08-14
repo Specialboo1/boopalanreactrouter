@@ -13,7 +13,9 @@ import {
 } from "react-router-dom";
 import Createuser from './createuser';
 import Edituser from './edituser';
-import Editproduct from './editproduct';
+import Productedit from './proudctedit';
+import { UserProvider } from './usercontext';
+import { Productprovider } from './productcontext';
 function App() {
   return (
     <Router>
@@ -24,12 +26,16 @@ function App() {
       <Topbar></Topbar>
       <div class="container-fluid">
         <Switch>
+          <UserProvider>
+            <Productprovider>
           <Route path="/" component={Dashboard} exact={true}/>
           <Route path="/user" component={Users} exact={true}/>
           <Route path="/product" component={Product} exact={true}/>
           <Route path="/createuser" component={Createuser} exact={true}/>
           <Route path="/user/edit/:id" component={Edituser} exact={true}/>
-          <Route path="/product/edit/:id" component={Editproduct} exact={true}/>
+          <Route path="/product/edit/:id" component={Productedit} exact={true}/>
+          </Productprovider>
+          </UserProvider>
         </Switch>
        </div> 
        </div>

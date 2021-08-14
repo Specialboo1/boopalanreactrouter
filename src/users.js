@@ -1,43 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Usercontext from './usercontext';
 export default function Users()
 {
-    let userdata = [{
-        id : 1,
-        name: "Person 1",
-        poisition : "System Architect",
-        office: "Chennai",
-        age : 30,
-        startdate : "12/2020",
-        salary : "800000"
-    },
-    {
-        id : 2,
-        name: "Person 2",
-        poisition : "System Manager",
-        office: "Bangalore",
-        age : 25,
-        startdate : "02/2020",
-        salary : "600000"
-    },
-    {
-        id : 3,
-        name: "Person 3",
-        poisition : "System Engineer",
-        office: "Pune",
-        age : 27,
-        startdate : "06/2020",
-        salary : "400000"
-    },
-    {
-        id : 4,
-        name: "Person 4",
-        poisition : "Senior Developer",
-        office: "Delhi",
-        age : 32,
-        startdate : "04/2020",
-        salary : "1000000"
-    }]
+    const context = useContext(Usercontext);
+
+    let handledelete = (index) =>{
+        let confirm = window.confirm("Are you sure?");
+            if(confirm)
+            {            
+            context.userdata.splice(index,1);
+            context.setuserdata([...context.userdata]);
+            }        
+    }
     return(
         <>
         <h1 class="h3 mb-2 text-gray-800">Users</h1>
@@ -66,18 +41,18 @@ export default function Users()
                     </thead>
                     <tbody>
                        {
-                           userdata.map(obj =>{
+                           context.userdata.map((obj,index) =>{
                               return <tr>
-                                   <td>{obj.id}</td>
+                                   <td>{index+1}</td>
                                    <td>{obj.name}</td>
-                                   <td>{obj.poisition}</td>
+                                   <td>{obj.position}</td>
                                    <td>{obj.office}</td>
                                    <td>{obj.age}</td>
                                    <td>{obj.startdate}</td>
                                    <td>{obj.salary}</td>
                                    <td>
-                                       <Link to={`/user/edit/ ${obj.id}`} className="btn btn-sm btn-primary">Edit</Link>
-                                       <Link to={`/user/edit/ ${obj.id}`} className="btn btn-sm btn-danger ml-2">Delete</Link>
+                                       <Link to={`/user/edit/ ${index+1}`} className="btn btn-sm btn-primary">Edit</Link>    
+                                       <button onClick={()=>{handledelete(index)}} className="btn-sm btn-danger ml-2">Delete</button>
                                    </td>
                                 </tr>   
                            })

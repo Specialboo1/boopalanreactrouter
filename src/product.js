@@ -1,69 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Productcontext from './productcontext';
+import { useContext } from 'react';
 export default function Product()
 {
-    let productdata = [
-        {
-         "id": "1",
-         "name": "Dodge Accord",
-         "model": "Silverado",
-         "price": 87880
-        },
-        {
-         "id": "2",
-         "name": "Lamborghini Fiesta",
-         "model": "Grand Cherokee",
-         "price": 9862
-        },
-        {
-         "id": "3",
-         "name": "Nissan Fiesta",
-         "model": "Model S",
-         "price": 79810
-        },
-        {
-         "id": "4",
-         "name": "Smart Malibu",
-         "model": "Accord",
-         "price": 54767
-        },
-        {
-         "id": "5",
-         "name": "Mini Sentra",
-         "model": "Model T",
-         "price": 30262
-        },
-        {
-         "id": "6",
-         "name": "Fiat Impala",
-         "model": "Model S",
-         "price": 43172
-        },
-        {
-         "id": "7",
-         "name": "Porsche Explorer",
-         "model": "Countach",
-         "price": 44115
-        },
-        {
-         "id": "8",
-         "name": "Toyota Fortwo",
-         "model": "CX-9",
-         "price": 69220
-        },
-        {
-         "id": "9",
-         "name": "Audi Prius",
-         "model": "Spyder",
-         "price": 30328
-        },
-        {
-         "id": "10",
-         "name": "Land Rover Fortwo",
-         "model": "Silverado",
-         "price": 10952
-        }
-       ]
+const context = useContext(Productcontext);
+let handledelete = (index) => {
+    let confirm = window.confirm("Are you sure?");
+    if (confirm)
+    {
+        context.productdata.splice(index,1);
+        context.setproductdata([...context.productdata]);
+    }
+
+}
     return(
         <>
         <h1 class="h3 mb-2 text-gray-800">Products</h1>
@@ -87,16 +37,16 @@ export default function Product()
                     </thead>
                     <tbody>
                        {
-                         productdata.map(obj =>{
+                         context.productdata.map((obj, index) =>{
                              return(
                                 <tr>
-                                    <td>{obj.id}</td>
+                                    <td>{index + 1}</td>
                                     <td>{obj.name}</td>
                                     <td>{obj.model}</td>
                                     <td>{obj.price}</td>
                                     <td>
-                                       <Link to={`/product/edit/${obj.id}`} className="btn btn-sm btn-primary">Edit</Link>
-                                       <Link to={`/product/edit/${obj.id}`} className="btn btn-sm btn-danger ml-2">Delete</Link>
+                                       <Link to={`/product/edit/${index}`} className="btn btn-sm btn-primary">Edit</Link>
+                                       <button onClick={()=>{handledelete(index)}} className="btn btn-sm btn-danger ml-2">Delete</button>
                                    </td>
                                  </tr>)
                          } )                                
