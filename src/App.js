@@ -15,7 +15,7 @@ import Createuser from './createuser';
 import Edituser from './edituser';
 import Productedit from './proudctedit';
 import { UserProvider } from './usercontext';
-import { Productprovider } from './productcontext';
+import Createproduct from './createproduct';
 function App() {
   return (
     <Router>
@@ -27,14 +27,13 @@ function App() {
       <div class="container-fluid">
         <Switch>
           <UserProvider>
-            <Productprovider>
           <Route path="/" component={Dashboard} exact={true}/>
           <Route path="/user" component={Users} exact={true}/>
           <Route path="/product" component={Product} exact={true}/>
           <Route path="/createuser" component={Createuser} exact={true}/>
+          <Route path="/createproduct" component={Createproduct} exact={true}/>
           <Route path="/user/edit/:id" component={Edituser} exact={true}/>
           <Route path="/product/edit/:id" component={Productedit} exact={true}/>
-          </Productprovider>
           </UserProvider>
         </Switch>
        </div> 

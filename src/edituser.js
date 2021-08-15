@@ -1,38 +1,41 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useState } from 'react';
-import Usercontext from './usercontext';
 import { useHistory } from 'react-router';
 import { useEffect } from 'react';
+import axios from 'axios';
 
 function Edituser(props) {
-    var now = new Date(),
-    minDate = now.toISOString().substring(0,10);
-    const [name, setname] = useState("");
-    const [position, setposition] = useState("");
-    const [office,setoffice] = useState("");
-    const [age, setage] = useState("");
-    const [date, setdate] = useState("");
-    const [salary, setsalary] = useState("");
+  var now = new Date(),
+  minDate = now.toISOString().substring(0,10);
+  const [name, setname] = useState("");
+  const [avatar, setavatar] = useState("");
+  const [createdAt,setcreatedAt] = useState(""); 
+  const[loading,setloading] = useState(false);  
     
-    const context = useContext(Usercontext);
-    const history = useHistory();
+  const history = useHistory();
 
-    useEffect(() => {
-        let editdata = context.userdata[props.match.params.id -1];
-        setname(editdata.name);
-        setposition(editdata.position);
-        setoffice(editdata.office);
-        setage(editdata.age);
-        setdate(editdata.startdate);
-        setsalary(editdata.salary);
-
+    useEffect(async () => {
+        try {
+          let userdata = await axios.get(`https://60efffc2f587af00179d3c2b.mockapi.io/users/${+(props.match.params.id)}`);
+          setname(userdata.data.name);
+          setavatar(userdata.data.avatar);
+          setcreatedAt(userdata.data.createdAt.substring(0,10));
+          setloading(false);
+        } catch (error) {
+          console.log(error);
+          setloading(false);
+        }
     }, []);
 
-let handlesubmit = (e) => {
+let handlesubmit = async (e) => {
     e.preventDefault();
-    let editdata = {name, position,office, age, startdate : date, salary};
-    context.userdata[props.match.params.id -1] = editdata;
-    context.setuserdata([...context.userdata]);   
+    try {
+      await axios.put(`https://60efffc2f587af00179d3c2b.mockapi.io/users/${+(props.match.params.id)}`,{name,avatar,createdAt});
+      setloading(true);
+    } catch (error) {
+      console.log(error);
+      setloading(false);
+    }
     history.push("/user")
 }
 
@@ -44,28 +47,16 @@ let handlesubmit = (e) => {
     <input type='text' className='form-control'onChange={(e) => {setname(e.target.value)}} value={name} required/>
   </div>
   <div class="col-auto mt-2">
-    <label>Position</label>
-    <input type='text' className='form-control' onChange={(e) => {setposition(e.target.value)}} value={position} required/>
+    <label>Avatar</label>
+    <input type='text' className='form-control' onChange={(e) => {setavatar(e.target.value)}} value={avatar} required/>
   </div>
   <div class="col-auto mt-2">
-    <label>Office</label>
-    <input type='text' className='form-control' onChange={(e) => {setoffice(e.target.value)}} value={office} required/>
-  </div>
-  <div class="col-auto mt-2">
-    <label>Age</label>
-    <input type='text' className='form-control' onChange={(e) => {setage(e.target.value)}} value={age} required/>
-  </div>
-  <div class="col-auto mt-2">
-    <label >Start date</label>
-    <input type='date' max={minDate} className='form-control'onChange={(e) => {setdate(e.target.value)}} value={date} required/>
-  </div>
-  <div class="col-auto mt-2">
-    <label >Salary</label>
-    <input type='text' className='form-control' onChange={(e) => {setsalary(e.target.value)}} value={salary} required/>
+    <label >CreatedAt</label>
+    <input type='date' max={minDate} className='form-control'onChange={(e) => {setcreatedAt(e.target.value)}} value={createdAt} required/>
   </div>
   </div>
   <div class="row mt-3" >
-  <input type="submit" class="mx-auto btn-primary" value="Update"/>
+  <input type="submit" class="mx-auto btn-primary" disabled={loading} value="Update"/>
   </div>
   </form> 
     )

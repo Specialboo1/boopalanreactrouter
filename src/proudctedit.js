@@ -2,29 +2,38 @@ import React, { useContext } from 'react';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { useEffect } from 'react';
-import Productcontext from './productcontext';
+import axios from 'axios';
 
 function Productedit(props) {
     const [name, setname] = useState("");
     const [model, setmodel] = useState("");
     const [price,setprice] = useState("");
+    const[loading,setloading] = useState(false)
        
-    const context = useContext(Productcontext);
     const history = useHistory();
 
-    useEffect(() => {
-        let editdata = context.productdata[props.match.params.id];
-        setname(editdata.name);
-        setmodel(editdata.model);
-        setprice(editdata.price);
+    useEffect(async () => {
+      try {
+       let productdata = await axios.get(`https://60efffc2f587af00179d3c2b.mockapi.io/products/${props.match.params.id}`);
+       setname(productdata.data.name);
+       setmodel(productdata.data.model);
+       setprice(productdata.data.price);
+      } catch (error) {
+        console.log(error);
+      }
+       
         }, []);
 
-let handlesubmit = (e) => {
-    e.preventDefault();
-    let editdata = {name, model, price};
-    context.productdata[props.match.params.id -1] = editdata;
-    context.setproductdata([...context.productdata]);   
-    history.push("/product")
+let handlesubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.put(`https://60efffc2f587af00179d3c2b.mockapi.io/products/${props.match.params.id}`,{name,model,price});
+   setloading(true);
+  } catch (error) {
+    setloading(false);
+    console.log(error);
+  }
+   history.push("/product")
 }
 
     return (
@@ -44,7 +53,7 @@ let handlesubmit = (e) => {
   </div>
   </div>
   <div class="row mt-3" >
-  <input type="submit" class="mx-auto btn-primary" value="Update"/>
+  <input type="submit" class="mx-auto btn-primary" value="Update" disabled={loading}/>
   </div>
   </form> 
     )

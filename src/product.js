@@ -1,31 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Productcontext from './productcontext';
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import axios from "axios";
 export default function Product()
 {
-const context = useContext(Productcontext);
-let handledelete = (index) => {
-    let confirm = window.confirm("Are you sure?");
+    const [productdata,setproductdata] = useState([])
+    const [loading,setloading] = useState(true);
+    useEffect(async () => {
+        try {
+           let apidata = await axios.get("https://60efffc2f587af00179d3c2b.mockapi.io/products");
+           setproductdata([...apidata.data]);
+           setloading(false);
+        } catch (error) {
+            console.log(error);
+            setloading(false);
+        }        
+    }, [])
+    
+
+    let handledelete = async (id) => {
+        let confirm = window.confirm("Are you sure ?");
     if (confirm)
     {
-        context.productdata.splice(index,1);
-        context.setproductdata([...context.productdata]);
+    try {
+        await axios.delete(`https://60efffc2f587af00179d3c2b.mockapi.io/products/${id}`);
+        let productindex = productdata.findIndex(obj => obj.id === id);
+        productdata.splice(productindex,1);
+        setproductdata([...productdata]);        
+    } catch(error)
+    {
+        console.log(error);
     }
-
+    }
 }
+
     return(
         <>
         <h1 class="h3 mb-2 text-gray-800">Products</h1>
-        <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-            For more information about DataTables, please visit the official DataTables documentation</p>
+        
+            <Link to="/createproduct" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-3"><i
+                                class="fas fa-download fa-sm text-white-50"></i>Createproduct</Link>
         <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Productdata</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            {
+                loading ? <img src="https://media.giphy.com/media/xTk9ZvMnbIiIew7IpW/giphy.gif" className="img-responsive" alt="Oops" style={{maxHeight:"250px"}}/> :
+                <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                              <th>Id</th>
@@ -37,22 +60,24 @@ let handledelete = (index) => {
                     </thead>
                     <tbody>
                        {
-                         context.productdata.map((obj, index) =>{
+                         productdata.map((obj) =>{
+                        
                              return(
                                 <tr>
-                                    <td>{index + 1}</td>
-                                    <td>{obj.name}</td>
-                                    <td>{obj.model}</td>
-                                    <td>{obj.price}</td>
-                                    <td>
-                                       <Link to={`/product/edit/${index}`} className="btn btn-sm btn-primary">Edit</Link>
-                                       <button onClick={()=>{handledelete(index)}} className="btn btn-sm btn-danger ml-2">Delete</button>
+                                    <td class="align-middle">{obj.id}</td>
+                                    <td class="align-middle">{obj.name}</td>
+                                    <td class="align-middle">{obj.model}</td>
+                                    <td class="align-middle">{obj.price}</td>
+                                    <td class="align-middle">
+                                       <Link to={`/product/edit/${obj.id}`} className="btn btn-sm btn-primary">Edit</Link>
+                                       <button onClick={()=>{handledelete(obj.id)}} className="btn btn-sm btn-danger ml-2">Delete</button>
                                    </td>
                                  </tr>)
                          } )                                
                        }     
                     </tbody>
                 </table>
+                    }
             </div>
         </div>
     </div>
