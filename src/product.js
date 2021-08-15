@@ -45,7 +45,7 @@ let handledelete = (index) => {
                                     <td>{obj.model}</td>
                                     <td>{obj.price}</td>
                                     <td>
-                                       <Link to={`/product/edit/${index}`} className="btn btn-sm btn-primary">Edit</Link>
+                                       <Link to={`/product/edit/${index+1}`} className="btn btn-sm btn-primary">Edit</Link>
                                        <button onClick={()=>{handledelete(index)}} className="btn btn-sm btn-danger ml-2">Delete</button>
                                    </td>
                                  </tr>)
