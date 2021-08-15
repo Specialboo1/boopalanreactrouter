@@ -13,7 +13,7 @@ function Productedit(props) {
     const history = useHistory();
 
     useEffect(() => {
-        let editdata = context.productdata[props.match.params.id];
+        let editdata = context.productdata[props.match.params.id-1];
         setname(editdata.name);
         setmodel(editdata.model);
         setprice(editdata.price);
