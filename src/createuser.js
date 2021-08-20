@@ -82,7 +82,7 @@ return (
   </div>
   </div>
   <div class="row mt-3" >
-  <input type="submit" class="mx-auto btn-primary" disabled={loading}/>
+  <input type="submit" class="mx-auto btn-primary" disabled={loading} value="Submit"/>
   </div>
   </form> 
   </>
