@@ -1,48 +1,96 @@
 import axios from 'axios';
+import { isString, useFormik } from 'formik';
 import React from 'react';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 
 function Createproduct() {
   
-  const [name,setname] = useState("");
-  const[model,setmodel] = useState("");
-  const[price,setprice] = useState("");
   const[loading,setloading] = useState(false)
   const history = useHistory();
 
-let handlesubmit = async (e) => {
-  e.preventDefault();
-  try {
-    await axios.post("https://60efffc2f587af00179d3c2b.mockapi.io/products",{name,model,price})
-   setloading(true);
-  } catch (error) {
-    setloading(false);
-    console.log(error);
-  }
-   history.push("/product")
-}
+  const formik = useFormik({
+    initialValues :{
+      name: '',
+      model : '',
+      price : '',
+    },
+  validate : (values) => 
+      {
+        const errors = {};
+        if(!values.name){
+          errors.name = "Required";
+        }
+        else if(!/^[a-zA-Z]+$/.test(values.name))
+        {
+          errors.name = "Enter valid data";
+        }
+       if (!values.model)
+       {
+         errors.model = "Required";
+       }
+       else if (!isString(values.model))
+       {
+         errors.model = "Enter valid data";
+       }
+       if (!values.price)
+       {
+         errors.price = "Required";
+       }
+       else if (isNaN(values.price))
+       {
+         errors.price = "Enter Numerical data";
+       }
+      
+        return errors;
+      },
+    
+    onSubmit : async (values) => {
+      let name = values.name;
+      let model = values.model;
+      let price = values.price;
+      try {
+        await axios.post("https://60efffc2f587af00179d3c2b.mockapi.io/products",{name,model,price})
+       setloading(true);
+      } catch (error) {
+        setloading(false);
+        console.log(error);
+      }
+       history.push("/product")
+    }
+  })
 
-    return (
-<form onSubmit={handlesubmit}>
+ return (
+   <>
+<form onSubmit={formik.handleSubmit}>
   <div className='row'>
   <div class="col-auto mt-2">
     <label >Name</label>
-    <input type='text' className='form-control'onChange={(e) => {setname(e.target.value)}} value={name} required/>
+    <input type='text' name='name' className='form-control' onChange={formik.handleChange} value={formik.values.name} />
+  {
+   formik.errors.name ? <span style={{color:'red'}}>{formik.errors.name}</span> : null
+  }
   </div>
   <div class="col-auto mt-2">
     <label>Model</label>
-    <input type='text' className='form-control' onChange={(e) => {setmodel(e.target.value)}} value={model} required/>
+    <input type='text' name ='model' className='form-control' onChange={formik.handleChange} value={formik.values.model} />
+  {
+    formik.errors.model ? <span style={{color:'red'}}>{formik.errors.model}</span> : null
+  }
   </div>
   <div class="col-auto mt-2">
     <label>Price</label>
-    <input type='text' className='form-control' onChange={(e) => {setprice(e.target.value)}} value={price} required/>
+    <input type='text' name ='price' className='form-control' onChange={formik.handleChange} value={formik.values.price} />
+  {
+    formik.errors.price ? <span style={{color:'red'}}>{formik.errors.price}</span> : null
+  }
   </div>
   </div>
   <div class="row mt-3" >
-  <input type="submit" class="mx-auto btn-primary" disabled={loading}/>
+  <input type="submit" class="mx-auto btn-primary" disabled={loading} value="Submit"/>
   </div>
   </form> 
+  </>
     )
 }
 
