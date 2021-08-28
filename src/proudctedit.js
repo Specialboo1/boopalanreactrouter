@@ -23,7 +23,7 @@ function Productedit(props) {
           if(!values.name){
             errors.name = "Required";
           }
-          else if(!/^[a-zA-Z]+$/.test(values.name))
+          else if(/^[a-zA-Z]+$/.test(values.name))
           {
             errors.name = "Enter valid data";
           }
@@ -65,9 +65,9 @@ function Productedit(props) {
     useEffect(async () => {
       try {
        let productdata = await axios.get(`https://60efffc2f587af00179d3c2b.mockapi.io/products/${props.match.params.id}`);
-        formik.initialValues.name = productdata.data.name;
-       formik.initialValues.model = productdata.data.model;
-       formik.initialValues.price = productdata.data.price;
+       formik.setFieldValue("name",productdata.data.name);
+       formik.setFieldValue("model",productdata.data.model);
+       formik.setFieldValue("price",productdata.data.price);
       } catch (error) {
         console.log(error);
       }
