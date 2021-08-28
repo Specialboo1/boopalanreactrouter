@@ -47,9 +47,9 @@ function Edituser(props) {
     useEffect(async () => {
         try {
           let userdata = await axios.get(`https://60efffc2f587af00179d3c2b.mockapi.io/users/${+(props.match.params.id)}`);
-          formik.initialValues.name = (`${userdata.data.name}`);
-          formik.initialValues.avatar =(`${userdata.data.avatar}`);
-          formik.initialValues.createdAt = (`${userdata.data.createdAt.substring(0,10)}`);
+           formik.setFieldValue ("name",userdata.data.name);
+          formik.setFieldValue("avatar",userdata.data.avatar);
+          formik.setFieldValue("createdAt",userdata.data.createdAt.substring(0,10));
           setloading(false);
         } catch (error) {
           console.log(error);
